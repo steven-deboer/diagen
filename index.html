@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagram Generator</title>
+    <title>DiaGen - Diagram Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-r from-purple-400 via-blue-500 to-green-500 min-h-screen">
+<body class="bg-gradient-to-br from-blue-700 via-blue-500 to-purple-500 min-h-screen">
     <div class="container mx-auto p-6">
-      <h1 class="text-5xl font-bold text-white mb-10">Diagram Generator</h1>
-      <form id="generatorForm" class="bg-white shadow-md rounded p-6">
+        
+      <h1 class="text-5xl font-bold text-white mb-10">DiaGen</h1>
+        <p class="text-lg text-white mb-6">Automated Diagram Generator</p>
+      <form id="generatorForm" class="bg-white shadow-2xl rounded-xl p-6">
         <div class="mb-4">
           <label for="prompt" class="block text-gray-700 text-sm font-bold mb-2">Enter your diagram description:</label>
-          <textarea id="prompt" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+          <textarea id="prompt" rows="4" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
         </div>
         <div class="mb-4">
           <label for="apiKey" class="block text-gray-700 text-sm font-bold mb-2">API Key:</label>
@@ -23,9 +25,9 @@
               <span class="ml-2 text-sm text-gray-700">Debug</span>
             </label>
           </div>
-        <input type="password" id="apiKey" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <input type="password" id="apiKey" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
-        <button type="submit" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-xl focus:outline-none  shadow-outline focus:shadow-outline">
           Generate Diagram
         </button>
         <div id="loadingIndicator" class="hidden">
@@ -38,11 +40,11 @@
       </form>
       <div class="result mt-6" style="display: none;">
         <h2 class="text-3xl font-bold text-white mb-4">Generated Diagram:</h2>
-        <img id="resultImage" class="w-full h-auto shadow-md rounded" />
+        <img id="resultImage" class="w-full h-auto shadow-md rounded-xl" />
       </div>
       <div id="debugResponseContainer" class="hidden mt-4">
         <h2 class="text-lg font-bold text-gray-700">Debug: AI Response</h2>
-        <pre id="debugResponse" class="border border-gray-300 rounded p-4 bg-gray-100 text-sm text-gray-700"></pre>
+        <pre id="debugResponse" class="border border-gray-300 rounded-xl p-4 bg-gray-100 text-sm text-gray-700"></pre>
       </div>
     </div>
     <div id="loadingOverlay" class="fixed inset-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 hidden">
