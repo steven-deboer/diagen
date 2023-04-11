@@ -6,12 +6,28 @@
     <title>DiaGen - Diagram Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .diagen-logo {
+            height: 1em;
+            width: auto;
+            fill: #FFF;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 to-purple-500 min-h-screen">
+<body class="min-h-screen bg-gradient-to-r from-purple-500 to-blue-500">
     <div class="container mx-auto p-6">
         
-      <h1 class="text-5xl font-bold text-white mb-10">DiaGen</h1>
-        <p class="text-lg text-white mb-6">Automated Diagram Generator</p>
+      <h1 class="text-5xl font-bold text-white mb-2">
+        <svg class="diagen-logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+          <path d="M256,0C114.624,0,0,114.624,0,256c0,141.376,114.624,256,256,256c141.376,0,256-114.624,256-256
+          C512,114.624,397.376,0,256,0z M256,480c-123.52,0-224-100.48-224-224S132.48,32,256,32c123.52,0,224,100.48,224,224
+          S379.52,480,256,480z"/>
+          <path d="M320,256c0,35.296-28.704,64-64,64c-35.296,0-64-28.704-64-64c0-35.296,28.704-64,64-64C291.296,192,320,220.704,320,256z"/>
+        </svg>
+        DiaGen
+      </h1>
+      <p class="text-lg text-white mb-6">Automated Diagram Generator</p>
       <form id="generatorForm" class="bg-white shadow-2xl rounded-xl p-6">
         <div class="mb-4">
           <label for="prompt" class="block text-gray-700 text-sm font-bold mb-2">Enter your diagram description:</label>
@@ -26,32 +42,33 @@
             </label>
           </div>
         <input type="password" id="apiKey" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
-        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-xl focus:outline-none  shadow-outline focus:shadow-outline">
-          Generate Diagram
-        </button>
-        <div id="loadingIndicator" class="hidden">
-            <svg class="animate-spin h-5 w-5 text-white mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Loading...
-        </div>
-      </form>
-      <div class="result mt-6" style="display: none;">
-        <h2 class="text-3xl font-bold text-white mb-4">Generated Diagram:</h2>
-        <img id="resultImage" class="w-full h-auto shadow-md rounded-xl" />
-      </div>
-      <div id="debugResponseContainer" class="hidden mt-4">
-        <h2 class="text-lg font-bold text-gray-700">Debug: AI Response</h2>
-        <pre id="debugResponse" class="border border-gray-300 rounded-xl p-4 bg-gray-100 text-sm text-gray-700"></pre>
-      </div>
     </div>
-    <div id="loadingOverlay" class="fixed inset-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="border-t-4 border-blue-500 border-solid rounded-full animate-spin w-16 h-16"></div>
+    <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-xl focus:outline-none  shadow-outline focus:shadow-outline">
+      Generate Diagram
+    </button>
+    <div id="loadingIndicator" class="hidden">
+        <svg class="animate-spin h-5 w-5 text-white mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Loading...
     </div>
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
-    <script src="scripts.js"></script>
-  </body>  
+  </form>
+  <div class="result mt-6" style="display: none;">
+    <h2 class="text-3xl font-bold text-white mb-4">Generated Diagram:</h2>
+    <img id="resultImage" class="w-full h-auto shadow-md rounded-xl" />
+  </div>
+  <div id="debugResponseContainer" class="hidden mt-4">
+    <h2 class="text-lg font-bold text-gray-700">Debug: AI Response</h2>
+    <pre id="debugResponse" class="border border-gray-300 rounded-xl p-4 bg-gray-100 text-sm text-gray-700"></pre>
+  </div>
+</div>
+<div id="loadingOverlay" class="fixed inset-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="border-t-4 border-blue-500 border-solid rounded-full animate-spin w-16 h-16"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
+<script src="scripts.js"></script>
+</body>  
 </html>
+
