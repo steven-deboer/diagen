@@ -176,6 +176,7 @@ async function getKrokiURL(promptText, apiKey) {
             - outputtype
             - diagramcode
 
+            If the user asks for a mindmap, e.g.: create a mind map ... always change the diagramtype to something you are allowed to.
             `,
           },
         ],
