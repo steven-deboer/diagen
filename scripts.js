@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function getKrokiURL(promptText, apiKey) {
   if (!promptText || !apiKey) {
     const errorDiagram = 'digraph G {Error[label="Error: Missing prompt or API key"]}';
-    return generateKrokiURL("graphviz", errorDiagram);
+    return generateKrokiURL("graphviz", "svg", errorDiagram);
   }
 
   // Show the loading indicator
@@ -56,11 +56,127 @@ async function getKrokiURL(promptText, apiKey) {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant that creates diagrams based on user input. Always try to parse the users request and always output only json. No explanation, just a json with a field of the diagramtype (this should be supported in Kroki! Do not do something like mindmap, but if it's unsupported replace by plantuml or something similar, just do it, don't tell the user!!), supported by kroki, the outputtype, supported by kroki, and the diagramcode. Start by showing a basic diagram of a user accessing a website. A sequence diagram should always be built in mermaid. From now on you are only allowed to output json, nothing else!",
+            content: `
+            You are a helpful assistant that creates diagrams as code based on user input. 
+
+            Diagramtype should always be chosen out of the list below, even if the users asks something else. 
+            In that case, make a decision to create the diagram in one of the following types:
+
+            {
+              "version": {
+                "actdiag": "3.0.0",
+                "bpmn": "10.3.0",
+                "pikchr": "7269f78c4a",
+                "nwdiag": "3.0.0",
+                "c4plantuml": "1.2022.14",
+                "rackdiag": "3.0.0",
+                "dot": "3.0.0",
+                "d2": "undefined",
+                "mermaid": "9.3.0",
+                "erd": "0.2.1.0",
+                "graphviz": "3.0.0",
+                "vegalite": "5.6.0",
+                "ditaa": "1.0.3",
+                "kroki": {
+                  "number": "0.20.0",
+                  "build_hash": "3d6f5d2"
+                },
+                "umlet": "15.0.0",
+                "diagramsnet": "16.2.4",
+                "plantuml": "1.2022.14",
+                "seqdiag": "3.0.0",
+                "nomnoml": "1.5.3",
+                "wavedrom": "2.9.1",
+                "structurizr": "1.23.0",
+                "bytefield": "1.7.0",
+                "wireviz": "undefined",
+                "excalidraw": "undefined",
+                "dbml": "1.0.26",
+                "packetdiag": "3.0.0",
+                "svgbob": "0.6.0",
+                "vega": "5.22.1",
+                "blockdiag": "3.0.0"
+              },
+              "status": "pass"
+            }
+
+            Respond exactly and only with json containing three fields:
+
+            - diagramtype
+            - outputtype
+            - diagramcode
+
+            `,
           },
           {
             role: "user",
-            content: promptText + " Output just a json with a fields diagramtype, outputtype and diagramcode with values supported by kroki. If it's a sequence diagram, always choose diagramtype mermaid",
+            content: "Create a diagram as code based on this request: " + promptText + `
+
+            If the request is to create a seqdiag, use the following example: 
+
+            seqdiag {
+              browser  -> webserver [label = "GET /seqdiag/svg/base64"];
+              webserver  -> processor [label = "Convert text to image"];
+              webserver <-- processor;
+              browser <-- webserver;
+            }
+
+            In your response, you are only allowed to choose a diagramtype out of the list below and nothing else.
+            In doubt, make a good decision to choose type out of the list below, which contains examples like actdiag,
+            mermaid, vegalite.
+
+            Always choose on of those for diagramtype.
+
+            If you think of something else like a mindmap, choose something of the list below to create that mindmap, but
+            use something of the list below for diagramtype.
+
+            {
+              "version": {
+                "actdiag": "3.0.0",
+                "bpmn": "10.3.0",
+                "pikchr": "7269f78c4a",
+                "nwdiag": "3.0.0",
+                "c4plantuml": "1.2022.14",
+                "rackdiag": "3.0.0",
+                "dot": "3.0.0",
+                "d2": "undefined",
+                "mermaid": "9.3.0",
+                "erd": "0.2.1.0",
+                "graphviz": "3.0.0",
+                "vegalite": "5.6.0",
+                "ditaa": "1.0.3",
+                "kroki": {
+                  "number": "0.20.0",
+                  "build_hash": "3d6f5d2"
+                },
+                "umlet": "15.0.0",
+                "diagramsnet": "16.2.4",
+                "plantuml": "1.2022.14",
+                "seqdiag": "3.0.0",
+                "nomnoml": "1.5.3",
+                "wavedrom": "2.9.1",
+                "structurizr": "1.23.0",
+                "bytefield": "1.7.0",
+                "wireviz": "undefined",
+                "excalidraw": "undefined",
+                "dbml": "1.0.26",
+                "packetdiag": "3.0.0",
+                "svgbob": "0.6.0",
+                "vega": "5.22.1",
+                "blockdiag": "3.0.0"
+              },
+              "status": "pass"
+            }
+
+            In Mermaid, do not use spaces or special characters in node names. If required, at a text in the node.
+
+            Respond exactly and only with json containing three fields: 
+            
+            - diagramtype
+            - outputtype
+            - diagramcode
+
+            `,
           },
         ],
         n: 1,
@@ -70,60 +186,44 @@ async function getKrokiURL(promptText, apiKey) {
 
     if (!response.ok) {
       const errorDiagram = 'digraph G {Error[label="Error: API request failed"]}';
-      return generateKrokiURL("graphviz", errorDiagram);
+      return generateKrokiURL("graphviz", "svg", errorDiagram);
     }
 
     const data = await response.json();
-    var assistantResponse = data.choices[0].message.content.trim().replace(/\n/g, '');
-    assistantResponse = assistantResponse.replace(/\n/g, "");
-    console.log("Debug: OpenAI Response:", assistantResponse);
+    const assistantResponse = data.choices[0].message.content.trim();
+    console.log("Debug information:", assistantResponse);
 
-    const jsonRegex = /{[^}]*"diagramtype"[^}]*"outputtype"[^}]*"diagramcode"[^}]*}/;
-    //const jsonRegex = /\{\s*"diagramtype"\s*:\s*"([^"]*)"\s*,\s*"outputtype"\s*:\s*"([^"]*)"\s*,\s*"diagramcode"\s*:\s*"([^"]*)"\s*\}/;
+    try {
+      const jsonResponse = JSON.parse(assistantResponse);
 
-    const match = assistantResponse.match(jsonRegex);
+      if (jsonResponse.diagramtype && jsonResponse.outputtype && jsonResponse.diagramcode) {
+        const imageURL = await generateKrokiURL(jsonResponse.diagramtype, jsonResponse.outputtype, jsonResponse.diagramcode);
 
-    if (!match) {
+        if (debugEnabled) {
+          document.getElementById("debugResponseContainer").classList.remove("hidden");
+          document.getElementById("debugResponse").textContent = assistantResponse + "\n\n" + jsonResponse.diagramcode + "\n\n" + imageURL;
+        } else {
+          document.getElementById("debugResponseContainer").classList.add("hidden");
+        }
+
+        // Hide the loading indicator when the request is complete
+        document.getElementById("loadingIndicator").classList.add("hidden");
+
+        return imageURL;
+      } else {
+        throw new Error("Invalid JSON format in the assistant's response.");
+      }
+    } catch (error) {
       const errorDiagram = 'digraph G {Error[label="' + assistantResponse + '"]}';
-      return generateKrokiURL("graphviz", errorDiagram);
+      return generateKrokiURL("graphviz", "svg", errorDiagram);
     }
-
-    let jsonResponseString = match[0].replace(/"diagramcode":\s"([^"]*)"/, (match, p1) => {
-      return `"diagramcode": "${p1.replace(/"/g, '\\"')}"`;
-    });
-
-    jsonResponseString = jsonResponseString.replace(/\n/g, "");
-    console.log(jsonResponseString);
-    var jsonResponse = JSON.parse(jsonResponseString);
-    console.log("Debug: Parsed JSON:", jsonResponse);
-
-    if (!jsonResponse.diagramtype || !jsonResponse.outputtype || !jsonResponse.diagramcode) {
-      console.log(jsonResponse);
-      const errorDiagram = 'digraph G {Error[label="Error: Invalid JSON format in the assistant\'s response."]}';
-      return generateKrokiURL("graphviz", errorDiagram);
-    }
-
-    const encodedDiagram = encodeDiagram(jsonResponse.diagramcode);
-    const krokiURL = `https://kroki.io/${jsonResponse.diagramtype}/${jsonResponse.outputtype}/${encodedDiagram}`;
-
-    if (debugEnabled) {
-      document.getElementById("debugResponseContainer").classList.remove("hidden");
-      document.getElementById("debugResponse").textContent = assistantResponse + "\n\n" + jsonResponse.diagramcode + "\n\n" + krokiURL;
-    } else {
-      document.getElementById("debugResponseContainer").classList.add("hidden");
-    }
-
-    // Hide the loading indicator when the request is complete
-    document.getElementById("loadingIndicator").classList.add("hidden");
-
-    return krokiURL;
-  } catch(error) {
+  } catch (error) {
     // Hide the loading indicator when an error occurs
     document.getElementById("loadingIndicator").classList.add("hidden");
 
     console.log(error);
     var errorDiagram = 'digraph G {Error[label="Error: An unexpected error occurred"]}';
-    return generateKrokiURL("graphviz", encodeDiagram(errorDiagram));
+    return generateKrokiURL("graphviz", "svg", encodeDiagram(errorDiagram));
   } finally {
     // Hide the loading overlay
     toggleLoadingOverlay(false);
@@ -152,7 +252,7 @@ function encodeDiagram(diagramSource) {
 }
 
 
-function generateKrokiURL(diagramType, diagramSource) {
+function generateKrokiURL(diagramType, outputType, diagramSource) {
   const encodedDiagram = encodeDiagram(diagramSource);
   return `https://kroki.io/${diagramType}/svg/${encodedDiagram}`;
 }
