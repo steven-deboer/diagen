@@ -100,11 +100,12 @@ async function getKrokiURL(promptText, apiKey) {
               "status": "pass"
             }
 
-            Respond exactly and only with json containing three fields:
+            Respond exactly and only with json containing four fields:
 
             - diagramtype
             - outputtype
             - diagramcode
+            - explanation (explain the diagram in max 10 sentences)
 
             `,
           },
@@ -170,11 +171,12 @@ async function getKrokiURL(promptText, apiKey) {
 
             In Mermaid, do not use spaces or special characters in node names. If required, at a text in the node.
 
-            Respond exactly and only with json containing three fields: 
+            Respond exactly and only with json containing four fields: 
             
             - diagramtype
             - outputtype
             - diagramcode
+            - explanation (explain the diagram in max 10 sentences)
 
             If the user asks for a mindmap, e.g.: create a mind map ... always change the diagramtype to something you are allowed to.
             `,
@@ -197,6 +199,18 @@ async function getKrokiURL(promptText, apiKey) {
     try {
       const jsonResponse = JSON.parse(assistantResponse);
 
+      // Select the HTML element where you want to display the explanation
+      const explanationElement = document.getElementById("explanationText");
+      
+      // Check if the explanation exists in the response
+      if(jsonResponse.explanation) {
+          // Assign the explanation to the text content of the selected HTML element
+          explanationElement.textContent = jsonResponse.explanation;
+      } else {
+          // If there is no explanation in the response, you can clear the previous explanation
+          explanationElement.textContent = "";
+      }
+
       if (jsonResponse.diagramtype && jsonResponse.outputtype && jsonResponse.diagramcode) {
         const imageURL = await generateKrokiURL(jsonResponse.diagramtype, jsonResponse.outputtype, jsonResponse.diagramcode);
 
@@ -206,6 +220,8 @@ async function getKrokiURL(promptText, apiKey) {
         } else {
           document.getElementById("debugResponseContainer").classList.add("hidden");
         }
+
+
 
         // Hide the loading indicator when the request is complete
         document.getElementById("loadingIndicator").classList.add("hidden");
